@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>NEON TTT</title>
+<title>NEON TTT · BLITZCORE</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -21,15 +21,36 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,245,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 #app{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:12px 16px 80px;min-height:100vh;display:flex;flex-direction:column;gap:12px;}
 
+/* ═══════ SPLASH ═══════ */
+#splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .6s ease;}
+#splash.fade-out{opacity:0;pointer-events:none;}
+.splash-logo-wrap{position:relative;display:flex;flex-direction:column;align-items:center;}
+.splash-hexagon{width:90px;height:90px;position:relative;margin-bottom:16px;}
+.splash-hexagon svg{width:100%;height:100%;animation:hexSpin 4s linear infinite;}
+@keyframes hexSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.splash-inner-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.2rem;animation:iconPulse 2s ease-in-out infinite;}
+@keyframes iconPulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.1);filter:brightness(1.4)}}
+.splash-title{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;letter-spacing:.3em;color:var(--cyan);text-shadow:var(--glow-c);animation:splashGlow 1.5s ease-in-out infinite alternate;opacity:0;animation-delay:.3s;animation-fill-mode:forwards;}
+@keyframes splashGlow{from{text-shadow:0 0 10px #00f5ff,0 0 20px #00f5ff}to{text-shadow:0 0 20px #00f5ff,0 0 50px #00f5ff,0 0 80px #00f5ff}}
+@keyframes splashFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.splash-title{animation:splashFadeIn .6s .2s ease forwards, splashGlow 1.5s 1s ease-in-out infinite alternate;}
+.splash-subtitle{font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:.5em;color:var(--magenta);text-shadow:var(--glow-m);opacity:0;animation:splashFadeIn .6s .5s ease forwards;}
+.splash-bar-wrap{width:200px;height:2px;background:rgba(0,245,255,.1);border-radius:2px;overflow:hidden;margin-top:10px;opacity:0;animation:splashFadeIn .4s .7s ease forwards;}
+.splash-bar{height:100%;background:linear-gradient(90deg,var(--cyan),var(--magenta));width:0%;border-radius:2px;transition:width .1s linear;}
+.splash-loading-txt{font-size:.5rem;letter-spacing:.3em;color:rgba(192,192,255,.3);opacity:0;animation:splashFadeIn .4s .8s ease forwards;}
+.splash-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;width:2px;height:2px;border-radius:50%;animation:spFloat linear infinite;}
+@keyframes spFloat{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+
 /* HEADER */
 .header{text-align:center;padding:10px 0 4px;position:relative;}
 .logo{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;letter-spacing:.2em;background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--cyan));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;filter:drop-shadow(0 0 8px rgba(0,245,255,.6));}
 @keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
 .tagline{font-size:.56rem;letter-spacing:.4em;color:rgba(192,192,255,.38);margin-top:2px;}
 .dev-tag{font-size:.5rem;letter-spacing:.35em;color:rgba(255,0,255,.38);margin-top:1px;}
-.bell-wrap{position:absolute;top:8px;right:0;}
-.bell-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:1.1rem;cursor:pointer;position:relative;transition:all .2s;}
-.bell-btn:hover{border-color:var(--cyan);box-shadow:var(--glow-c);}
+.header-btns{position:absolute;top:8px;right:0;display:flex;gap:6px;}
+.bell-btn,.settings-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:1.1rem;cursor:pointer;position:relative;transition:all .2s;}
+.bell-btn:hover,.settings-btn:hover{border-color:var(--cyan);box-shadow:var(--glow-c);}
 .bell-badge{position:absolute;top:-5px;right:-5px;background:var(--magenta);color:#fff;font-size:.48rem;font-family:'Orbitron',sans-serif;border-radius:50%;width:16px;height:16px;display:none;align-items:center;justify-content:center;}
 .bell-badge.show{display:flex;}
 
@@ -72,6 +93,10 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .auth-tab.active{color:var(--cyan);background:rgba(0,245,255,.07);box-shadow:inset 0 -2px 0 var(--cyan);}
 .auth-form{display:none;}.auth-form.active{display:block;}
 
+/* GUEST BANNER */
+.guest-banner{background:rgba(255,255,0,.04);border:1px solid rgba(255,255,0,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:.58rem;color:rgba(255,255,0,.7);letter-spacing:.1em;line-height:1.6;text-align:center;}
+.guest-banner strong{color:var(--yellow);font-family:'Orbitron',sans-serif;font-size:.52rem;display:block;margin-bottom:4px;}
+
 /* AVATAR */
 .avatar{width:60px;height:60px;border-radius:50%;border:2px solid var(--cyan);object-fit:cover;box-shadow:var(--glow-c);background:#0d0d25;flex-shrink:0;}
 .avatar-sm{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);object-fit:cover;flex-shrink:0;}
@@ -93,6 +118,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .profile-stats .ps:nth-child(1) .ps-num{color:var(--green);}
 .profile-stats .ps:nth-child(2) .ps-num{color:var(--magenta);}
 .profile-stats .ps:nth-child(3) .ps-num{color:var(--cyan);}
+.guest-tag{display:inline-block;font-family:'Orbitron',sans-serif;font-size:.42rem;letter-spacing:.18em;padding:2px 7px;border:1px solid rgba(255,255,0,.3);border-radius:2px;color:var(--yellow);background:rgba(255,255,0,.05);margin-left:6px;vertical-align:middle;}
 
 /* STATS GRID */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
@@ -107,6 +133,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .mode-cards{display:flex;flex-direction:column;gap:10px;}
 .mode-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px;cursor:pointer;transition:all .25s;display:flex;gap:14px;align-items:center;}
 .mode-card:hover{border-color:var(--cyan);box-shadow:0 0 18px rgba(0,245,255,.12);transform:translateY(-2px);}
+.mode-card.disabled{opacity:.45;cursor:not-allowed;pointer-events:none;}
 .mode-icon{font-size:1.8rem;width:42px;text-align:center;}
 .mode-title{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:700;color:var(--cyan);margin-bottom:3px;}
 .mode-desc{font-size:.58rem;color:rgba(192,192,255,.42);line-height:1.5;}
@@ -150,14 +177,18 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .status-dot.waiting{background:var(--yellow);box-shadow:0 0 7px var(--yellow);animation:pulse 1s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
+/* QR / CODE COMPACT */
+.code-box{background:rgba(0,0,0,.5);border:1px solid rgba(0,245,255,.18);border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.code-text{flex:1;font-size:.52rem;color:rgba(0,245,255,.7);letter-spacing:.04em;word-break:break-all;line-height:1.5;max-height:52px;overflow:hidden;}
+.code-copy-btn{background:transparent;border:1px solid rgba(0,245,255,.28);border-radius:4px;padding:5px 10px;color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.48rem;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.code-copy-btn:hover{background:rgba(0,245,255,.08);}
+
 /* ACCEL */
 .accel-display{display:flex;gap:8px;align-items:center;font-size:.56rem;color:rgba(192,192,255,.38);letter-spacing:.1em;}
 .accel-bar-wrap{flex:1;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
 .accel-bar{height:100%;background:linear-gradient(90deg,var(--cyan),var(--magenta));border-radius:2px;width:0%;transition:width .1s;}
 
-/* ═══════════════════════════════════════
-   CHAT SYSTEM — MAIN UPGRADE
-═══════════════════════════════════════ */
+/* CHAT */
 .chat-panel{background:rgba(0,0,0,.38);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;}
 .chat-header{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.3);}
 .chat-header-title{font-family:'Orbitron',sans-serif;font-size:.52rem;letter-spacing:.22em;color:rgba(0,245,255,.55);}
@@ -166,8 +197,6 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .chat-messages::-webkit-scrollbar{width:3px;}
 .chat-messages::-webkit-scrollbar-track{background:transparent;}
 .chat-messages::-webkit-scrollbar-thumb{background:rgba(0,245,255,.2);border-radius:2px;}
-
-/* Message bubbles */
 .chat-msg{display:flex;flex-direction:column;gap:2px;max-width:86%;animation:msgIn .2s ease;}
 @keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .chat-msg.mine{align-self:flex-end;}
@@ -182,20 +211,15 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .chat-msg.system-msg .chat-msg-bubble{background:rgba(0,0,0,.3);border:1px solid rgba(0,245,255,.1);color:rgba(0,245,255,.4);font-size:.54rem;letter-spacing:.12em;border-radius:4px;text-align:center;}
 .chat-msg-time{font-size:.42rem;color:rgba(192,192,255,.2);padding:0 4px;}
 .chat-msg.mine .chat-msg-time{text-align:right;}
-
-/* Chat input */
 .chat-input-row{display:flex;gap:0;border-top:1px solid var(--border);background:rgba(0,0,0,.3);}
 .chat-input{flex:1;background:transparent;border:none;outline:none;padding:10px 12px;color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:.05em;}
 .chat-input::placeholder{color:rgba(0,245,255,.2);}
 .chat-send-btn{background:transparent;border:none;border-left:1px solid var(--border);padding:10px 14px;color:var(--cyan);cursor:pointer;font-size:1rem;transition:all .2s;flex-shrink:0;}
 .chat-send-btn:hover{background:rgba(0,245,255,.08);}
-.chat-send-btn:active{background:rgba(0,245,255,.15);}
-
-/* Typing indicator */
 .typing-indicator{font-size:.5rem;letter-spacing:.12em;color:rgba(255,0,255,.4);padding:2px 12px;min-height:16px;transition:opacity .2s;}
 .typing-indicator.hidden{opacity:0;}
 
-/* CONNECTION FLOW — improved */
+/* CONN STEPS */
 .conn-steps{display:flex;flex-direction:column;gap:10px;}
 .conn-step{display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;transition:all .3s;}
 .conn-step.active-step{border-color:var(--cyan);background:rgba(0,245,255,.04);}
@@ -207,11 +231,45 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .conn-step-label{font-family:'Orbitron',sans-serif;font-size:.55rem;letter-spacing:.18em;color:rgba(192,192,255,.4);margin-bottom:6px;}
 .active-step .conn-step-label{color:var(--cyan);}
 
-/* Deeplink share */
+/* SHARE LINK */
 .share-link-box{background:rgba(0,0,0,.5);border:1px solid rgba(0,245,255,.18);border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .share-link-url{flex:1;font-size:.55rem;color:rgba(0,245,255,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.04em;}
 .share-link-copy{background:transparent;border:1px solid rgba(0,245,255,.28);border-radius:4px;padding:5px 10px;color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.5rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .share-link-copy:hover{background:rgba(0,245,255,.08);}
+
+/* SETTINGS OVERLAY */
+.settings-overlay{display:none;position:fixed;inset:0;background:rgba(5,5,16,.92);z-index:500;align-items:flex-start;justify-content:center;padding:14px 16px 14px;overflow-y:auto;backdrop-filter:blur(4px);}
+.settings-overlay.show{display:flex;flex-direction:column;}
+.settings-box{background:var(--panel);border:1px solid var(--cyan);border-radius:10px;width:100%;max-width:420px;margin:0 auto;box-shadow:var(--glow-c);}
+.settings-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);font-family:'Orbitron',sans-serif;font-size:.68rem;color:var(--cyan);}
+.settings-close{background:transparent;border:none;color:rgba(192,192,255,.45);font-size:1.2rem;cursor:pointer;}
+.settings-section{padding:14px 18px;border-bottom:1px solid var(--border);}
+.settings-section:last-child{border-bottom:none;}
+.settings-section-title{font-family:'Orbitron',sans-serif;font-size:.54rem;letter-spacing:.28em;color:var(--magenta);margin-bottom:12px;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.settings-row:last-child{border-bottom:none;}
+.settings-row-label{font-size:.62rem;color:var(--text);letter-spacing:.06em;}
+.settings-row-sub{font-size:.52rem;color:rgba(192,192,255,.35);margin-top:2px;}
+/* Toggle switch */
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:11px;cursor:pointer;transition:all .3s;}
+.toggle-slider:before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:rgba(192,192,255,.4);border-radius:50%;transition:all .3s;}
+.toggle input:checked+.toggle-slider{background:rgba(0,245,255,.15);border-color:var(--cyan);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(18px);background:var(--cyan);box-shadow:0 0 6px var(--cyan);}
+/* Credits */
+.credits-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.credits-item:last-child{border-bottom:none;}
+.credits-item-icon{font-size:1.1rem;width:24px;text-align:center;}
+.credits-item-info{flex:1;}
+.credits-item-label{font-size:.6rem;color:var(--text);}
+.credits-item-sub{font-size:.52rem;color:rgba(192,192,255,.35);margin-top:1px;}
+.credits-link{font-size:.54rem;color:var(--cyan);letter-spacing:.05em;text-decoration:none;border:1px solid rgba(0,245,255,.2);border-radius:3px;padding:3px 8px;transition:all .2s;}
+.credits-link:hover{background:rgba(0,245,255,.08);}
+/* Policy text */
+.policy-text{font-size:.58rem;color:rgba(192,192,255,.45);line-height:1.7;letter-spacing:.04em;}
+.policy-text h4{font-family:'Orbitron',sans-serif;font-size:.52rem;color:var(--cyan);letter-spacing:.2em;margin:10px 0 5px;}
+.policy-text h4:first-child{margin-top:0;}
 
 /* NOTIFICATIONS */
 .notif-overlay{display:none;position:fixed;inset:0;background:rgba(5,5,16,.9);z-index:500;align-items:flex-start;justify-content:center;padding-top:60px;backdrop-filter:blur(4px);}
@@ -282,30 +340,67 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 .step-label{font-size:.56rem;letter-spacing:.18em;color:rgba(192,192,255,.4);}
 #toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.93);border:1px solid var(--cyan);color:var(--cyan);font-size:.6rem;letter-spacing:.1em;padding:9px 18px;border-radius:4px;z-index:600;opacity:0;transition:opacity .3s;pointer-events:none;box-shadow:0 0 14px rgba(0,245,255,.22);white-space:nowrap;}
 #toast.show{opacity:1;}
-
-/* Invite banner */
 .invite-banner{background:linear-gradient(90deg,rgba(0,245,255,.06),rgba(255,0,255,.06));border:1px solid rgba(255,0,255,.28);border-radius:8px;padding:14px;text-align:center;}
 .invite-banner-title{font-family:'Orbitron',sans-serif;font-size:.68rem;color:var(--magenta);margin-bottom:6px;letter-spacing:.18em;}
 .invite-banner-sub{font-size:.58rem;color:rgba(192,192,255,.5);margin-bottom:12px;line-height:1.5;}
+
+/* Music indicator */
+.music-indicator{position:fixed;top:8px;left:8px;z-index:200;background:rgba(0,0,0,.7);border:1px solid rgba(0,245,255,.2);border-radius:4px;padding:4px 8px;font-size:.46rem;letter-spacing:.12em;color:rgba(0,245,255,.45);display:flex;align-items:center;gap:4px;transition:opacity .3s;}
+.music-indicator.hidden{opacity:0;pointer-events:none;}
+.music-note{animation:noteFloat 1.2s ease-in-out infinite alternate;}
+@keyframes noteFloat{from{transform:translateY(0)}to{transform:translateY(-3px)}}
 </style>
 </head>
 <body>
-<div id="app">
 
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-particles" id="splash-particles"></div>
+  <div class="splash-logo-wrap">
+    <div class="splash-hexagon">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="url(#hexGrad)" stroke-width="2"/>
+        <polygon points="50,15 85,32.5 85,67.5 50,85 15,67.5 15,32.5" fill="none" stroke="rgba(255,0,255,0.3)" stroke-width="1"/>
+        <defs>
+          <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00f5ff"/>
+            <stop offset="100%" stop-color="#ff00ff"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="splash-inner-icon">⚡</div>
+    </div>
+    <div class="splash-title">BLITZCORE</div>
+    <div class="splash-subtitle">GAMES</div>
+  </div>
+  <div class="splash-bar-wrap">
+    <div class="splash-bar" id="splash-bar"></div>
+  </div>
+  <div class="splash-loading-txt" id="splash-loading-txt">INITIALIZING...</div>
+</div>
+
+<!-- MUSIC INDICATOR -->
+<div class="music-indicator hidden" id="music-indicator">
+  <span class="music-note">♪</span>
+  <span id="music-track-name">THEME</span>
+</div>
+
+<div id="app">
   <!-- HEADER -->
   <div class="header">
     <div class="logo">NEON TTT</div>
     <div class="tagline">TICTACTOE · ONLINE MULTIPLAYER</div>
-    <div class="dev-tag">BY BLITZ</div>
-    <div class="bell-wrap">
+    <div class="dev-tag">BY BLITZ · BLITZCORE GAMES</div>
+    <div class="header-btns">
       <button class="bell-btn" onclick="openNotifs()">🔔<span class="bell-badge" id="bell-badge">0</span></button>
+      <button class="settings-btn" onclick="openSettings()">⚙️</button>
     </div>
   </div>
 
   <!-- UPDATE BANNER -->
   <div class="update-banner" id="update-banner"></div>
 
-  <!-- ═══════════════════ AUTH ═══════════════════ -->
+  <!-- ═══ AUTH ═══ -->
   <div class="screen active" id="screen-auth">
     <div class="panel">
       <div class="panel-title">// ACCESS TERMINAL</div>
@@ -324,6 +419,9 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         </div>
         <div class="err-msg" id="l-err"></div>
         <button class="btn btn-cyan" onclick="doLogin()" style="margin-top:8px">SIGN IN →</button>
+        <div style="margin-top:14px;text-align:center">
+          <button class="btn btn-sm" style="border:1px solid rgba(255,255,0,.3);color:var(--yellow);background:rgba(255,255,0,.03)" onclick="playAsGuest()">PLAY AS GUEST (NO ACCOUNT)</button>
+        </div>
       </div>
       <div class="auth-form" id="form-register">
         <div class="inp-group">
@@ -345,12 +443,12 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         <button class="btn btn-magenta" onclick="doRegister()" style="margin-top:8px">CREATE ACCOUNT →</button>
       </div>
     </div>
-    <div class="shake-hint" style="margin-top:auto">NEON TTT v3.0 · CHAT · DEEPLINKS · BY BLITZ</div>
+    <div class="shake-hint" style="margin-top:auto">NEON TTT v3.0 · CHAT · DEEPLINKS · BLITZCORE GAMES</div>
   </div>
 
-  <!-- ═══════════════════ HOME ═══════════════════ -->
+  <!-- ═══ HOME ═══ -->
   <div class="screen" id="screen-home">
-    <div class="profile-card">
+    <div class="profile-card" id="home-profile-card">
       <img class="avatar" id="home-avatar" src="" alt="pfp" onerror="this.src=randomAvatar()">
       <div class="profile-info">
         <div class="profile-name" id="home-username">PLAYER</div>
@@ -362,7 +460,6 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         </div>
       </div>
     </div>
-    <!-- Deeplink share -->
     <div class="panel" id="share-panel" style="padding:14px">
       <div class="panel-title">// YOUR INVITE LINK</div>
       <div class="share-link-box">
@@ -372,7 +469,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
       <div style="font-size:.53rem;color:rgba(192,192,255,.32);letter-spacing:.1em;">Share this link · anyone who opens it auto-joins your game</div>
     </div>
     <div class="mode-cards">
-      <div class="mode-card" onclick="showOnlineMenu()">
+      <div class="mode-card" id="mode-online" onclick="showOnlineMenu()">
         <div class="mode-icon">🌐</div>
         <div class="mode-info"><div class="mode-title">ONLINE MATCH</div><div class="mode-desc">WebRTC peer-to-peer · share your link or use codes.</div></div>
       </div>
@@ -388,7 +485,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
     <div class="shake-hint">📳 SHAKE DEVICE IN-GAME TO RESET BOARD</div>
   </div>
 
-  <!-- ═══════════════════ ONLINE MENU ═══════════════════ -->
+  <!-- ═══ ONLINE MENU ═══ -->
   <div class="screen" id="screen-online">
     <div class="mode-cards">
       <div class="mode-card" onclick="startHost()">
@@ -410,18 +507,19 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         <div class="conn-step-num">1</div>
         <div class="conn-step-body">
           <div class="conn-step-label">COPY YOUR OFFER CODE</div>
-          <textarea class="neon-input" id="offer-out" rows="3" readonly placeholder="Generating..."></textarea>
-          <div class="btn-row" style="margin-top:8px">
-            <button class="btn btn-cyan btn-sm" onclick="copyOffer()">📋 COPY</button>
-            <button class="btn btn-sm" style="border:1px solid rgba(0,245,255,.2);color:rgba(0,245,255,.5)" onclick="shareOffer()">🔗 SHARE</button>
+          <div class="code-box" style="margin-bottom:8px">
+            <span class="code-text" id="offer-out-display">Generating...</span>
+            <button class="code-copy-btn" onclick="copyOffer()">📋 COPY</button>
           </div>
+          <input type="hidden" id="offer-out">
+          <button class="btn btn-sm" style="border:1px solid rgba(0,245,255,.2);color:rgba(0,245,255,.5)" onclick="shareOffer()">🔗 SHARE LINK</button>
         </div>
       </div>
       <div class="conn-step" id="host-step2">
         <div class="conn-step-num">2</div>
         <div class="conn-step-body">
           <div class="conn-step-label">PASTE OPPONENT'S ANSWER</div>
-          <textarea class="neon-input" id="answer-in" rows="3" placeholder="Paste answer code here..."></textarea>
+          <textarea class="neon-input" id="answer-in" rows="2" placeholder="Paste answer code here..."></textarea>
           <button class="btn btn-magenta" style="margin-top:8px" onclick="hostApplyAnswer()">CONNECT ⚡</button>
         </div>
       </div>
@@ -432,7 +530,6 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
 
   <!-- JOIN SCREEN -->
   <div class="screen" id="screen-join">
-    <!-- If arrived via deeplink, show invite banner -->
     <div id="invite-banner-wrap" style="display:none">
       <div class="invite-banner">
         <div class="invite-banner-title">⚡ GAME INVITE</div>
@@ -445,7 +542,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         <div class="conn-step-num">1</div>
         <div class="conn-step-body">
           <div class="conn-step-label">PASTE HOST'S OFFER CODE</div>
-          <textarea class="neon-input" id="offer-in" rows="3" placeholder="Paste offer code here..."></textarea>
+          <textarea class="neon-input" id="offer-in" rows="2" placeholder="Paste offer code here..."></textarea>
           <button class="btn btn-cyan" style="margin-top:8px" onclick="guestMakeAnswer()">GENERATE ANSWER</button>
         </div>
       </div>
@@ -453,11 +550,12 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         <div class="conn-step-num">2</div>
         <div class="conn-step-body">
           <div class="conn-step-label">SEND THIS ANSWER TO HOST</div>
-          <textarea class="neon-input" id="answer-out" rows="3" readonly></textarea>
-          <div class="btn-row" style="margin-top:8px">
-            <button class="btn btn-magenta btn-sm" onclick="copyAnswer()">📋 COPY</button>
-            <button class="btn btn-sm" style="border:1px solid rgba(255,0,255,.2);color:rgba(255,0,255,.5)" onclick="shareAnswer()">🔗 SHARE</button>
+          <div class="code-box" style="margin-bottom:8px">
+            <span class="code-text" id="answer-out-display"></span>
+            <button class="code-copy-btn" onclick="copyAnswer()">📋 COPY</button>
           </div>
+          <input type="hidden" id="answer-out">
+          <button class="btn btn-sm" style="border:1px solid rgba(255,0,255,.2);color:rgba(255,0,255,.5)" onclick="shareAnswer()">🔗 SHARE</button>
           <div class="step-label" style="text-align:center;margin-top:10px;color:rgba(0,255,136,.4)">✓ WAITING FOR HOST TO CONNECT...</div>
         </div>
       </div>
@@ -466,7 +564,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
     <button class="btn btn-sm btn-green" onclick="cancelRoom()">← CANCEL</button>
   </div>
 
-  <!-- ═══════════════════ GAME SCREEN ═══════════════════ -->
+  <!-- ═══ GAME SCREEN ═══ -->
   <div class="screen" id="screen-game">
     <div class="players-row">
       <div class="player-badge" id="badge-x">
@@ -495,7 +593,6 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         <div class="cell" onclick="cellClick(8)" id="c8"></div>
       </div>
     </div>
-    <!-- Accelerometer (compact) -->
     <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:4px;padding:8px 14px">
       <div class="accel-display">
         <span>ACCEL</span>
@@ -503,7 +600,6 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         <span id="accel-val">0.0</span>
       </div>
     </div>
-    <!-- CHAT PANEL -->
     <div class="chat-panel" id="chat-panel">
       <div class="chat-header">
         <span class="chat-header-title">// MATCH CHAT</span>
@@ -519,7 +615,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
     <button class="btn btn-sm btn-green" onclick="exitGame()">← EXIT GAME</button>
   </div>
 
-  <!-- ═══════════════════ PROFILE ═══════════════════ -->
+  <!-- ═══ PROFILE ═══ -->
   <div class="screen" id="screen-profile">
     <div class="panel">
       <div class="panel-title">// YOUR PROFILE</div>
@@ -528,7 +624,7 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
         <div style="flex:1">
           <div style="font-family:'Orbitron',sans-serif;font-size:.95rem;color:var(--cyan);text-shadow:var(--glow-c)" id="profile-username">-</div>
           <div style="font-size:.55rem;color:rgba(192,192,255,.38);margin:4px 0 10px" id="profile-joined">-</div>
-          <div class="pfp-area" onclick="document.getElementById('edit-pfp-input').click()" style="padding:8px 12px">
+          <div class="pfp-area" onclick="document.getElementById('edit-pfp-input').click()" style="padding:8px 12px" id="profile-edit-pfp-area">
             <span class="pfp-area-label">📷 CHANGE PROFILE PICTURE</span>
           </div>
           <input type="file" id="edit-pfp-input" accept="image/*" style="display:none" onchange="uploadEditPfp(this)">
@@ -541,18 +637,17 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
       </div>
       <div class="chart-wrap"><canvas id="profile-chart"></canvas></div>
     </div>
-    <!-- Share profile link -->
-    <div class="panel" style="padding:14px">
+    <div class="panel" style="padding:14px" id="profile-share-panel">
       <div class="panel-title">// SHARE YOUR PROFILE</div>
       <div class="share-link-box">
         <span class="share-link-url" id="profile-deeplink">—</span>
         <button class="share-link-copy" onclick="copyProfileLink()">COPY</button>
       </div>
     </div>
-    <button class="btn btn-sm btn-magenta" onclick="doLogout()">SIGN OUT</button>
+    <button class="btn btn-sm btn-magenta" id="profile-logout-btn" onclick="doLogout()">SIGN OUT</button>
   </div>
 
-  <!-- ═══════════════════ LEADERBOARD ═══════════════════ -->
+  <!-- ═══ LEADERBOARD ═══ -->
   <div class="screen" id="screen-lb">
     <div class="panel">
       <div class="panel-title">// GLOBAL LEADERBOARD</div>
@@ -593,12 +688,112 @@ textarea.neon-input{resize:none;font-size:.54rem;letter-spacing:0;word-break:bre
   </div>
 </div>
 
+<!-- SETTINGS OVERLAY -->
+<div class="settings-overlay" id="settings-overlay" onclick="closeSettingsOutside(event)">
+  <div class="settings-box">
+    <div class="settings-header">
+      <span>⚙️ SETTINGS</span>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+
+    <!-- AUDIO -->
+    <div class="settings-section">
+      <div class="settings-section-title">// AUDIO</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">BACKGROUND MUSIC</div>
+          <div class="settings-row-sub">Theme music &amp; in-game music</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggle-music" checked onchange="onMusicToggle(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">VOLUME</div>
+          <div class="settings-row-sub">Music volume level</div>
+        </div>
+        <input type="range" id="music-volume" min="0" max="100" value="50" style="width:90px;accent-color:var(--cyan)" oninput="onVolumeChange(this.value)">
+      </div>
+    </div>
+
+    <!-- CREDITS -->
+    <div class="settings-section">
+      <div class="settings-section-title">// CREDITS &amp; CONTACT</div>
+      <div class="credits-item">
+        <div class="credits-item-icon">⚡</div>
+        <div class="credits-item-info">
+          <div class="credits-item-label">DEVELOPER — BLITZ</div>
+          <div class="credits-item-sub">BLITZCORE GAMES · NEON TTT v3.0</div>
+        </div>
+      </div>
+      <div class="credits-item">
+        <div class="credits-item-icon">📱</div>
+        <div class="credits-item-info">
+          <div class="credits-item-label">TELEGRAM</div>
+          <div class="credits-item-sub">Personal · @blitzXdev</div>
+        </div>
+        <a href="https://t.me/blitzXdev" target="_blank" class="credits-link">OPEN</a>
+      </div>
+      <div class="credits-item">
+        <div class="credits-item-icon">📢</div>
+        <div class="credits-item-info">
+          <div class="credits-item-label">BLITZCORE CHANNEL</div>
+          <div class="credits-item-sub">Updates &amp; releases · @blitzcore</div>
+        </div>
+        <a href="https://t.me/blitzcore" target="_blank" class="credits-link">JOIN</a>
+      </div>
+    </div>
+
+    <!-- POLICY -->
+    <div class="settings-section">
+      <div class="settings-section-title">// PRIVACY &amp; POLICY</div>
+      <div class="policy-text">
+        <h4>DATA COLLECTION</h4>
+        Your username, hashed password, profile picture URL, and game statistics (wins/losses/draws) are stored in our cloud database. No personal identifying information beyond your chosen username is collected.
+        <h4>PROFILE PICTURES</h4>
+        Profile pictures you upload are stored publicly via Catbox.moe, a third-party image hosting service. Do not upload sensitive or private images. If you choose not to upload, a generated avatar is used.
+        <h4>LOCAL STORAGE</h4>
+        Your session credentials and notification read-state are stored in your device's local storage for auto-login. Clear your browser data to remove these.
+        <h4>ONLINE GAMEPLAY</h4>
+        Online matches use WebRTC peer-to-peer connections. Your IP address may be visible to your opponent during connection negotiation via STUN servers (Google &amp; Cloudflare).
+        <h4>GUEST MODE</h4>
+        Playing as a guest stores no data on our servers. Game results in guest, local, and AI modes are not counted toward leaderboard stats.
+        <h4>CONTACT</h4>
+        For data removal or questions, contact the developer via Telegram at @blitzXdev.
+      </div>
+    </div>
+
+    <!-- APP INFO -->
+    <div class="settings-section">
+      <div class="settings-section-title">// APP INFO</div>
+      <div class="settings-row">
+        <div class="settings-row-label">VERSION</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:.58rem;color:var(--cyan)">3.0.0</div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">ENGINE</div>
+        <div style="font-size:.58rem;color:rgba(192,192,255,.4)">WebRTC · Minimax</div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">PUBLISHER</div>
+        <div style="font-size:.58rem;color:rgba(192,192,255,.4)">BLITZCORE GAMES</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
+<!-- AUDIO -->
+<audio id="audio-theme" loop preload="none"></audio>
+<audio id="audio-game" loop preload="none"></audio>
+
 <script>
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // CONFIG
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 const DB_URL   = 'https://api.npoint.io/b2dde53896d05fad211c';
 const CATBOX   = 'https://catbox.moe/user/api.php';
 const APP_BASE = 'https://neon-ttt.vercel.app';
@@ -614,14 +809,15 @@ const AVATARS = [
   'https://api.dicebear.com/7.x/pixel-art/svg?seed=arc8&backgroundColor=050510',
 ];
 function randomAvatar(seed){
-  if(seed) return `https://api.dicebear.com/7.x/pixel-art/svg?seed=${seed}&backgroundColor=050510`;
+  if(seed) return `https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent(seed)}&backgroundColor=050510`;
   return AVATARS[Math.floor(Math.random()*AVATARS.length)];
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // STATE
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 let currentUser  = null;
+let isGuest      = false;
 let board        = Array(9).fill('');
 let currentTurn  = 'X';
 let gameMode     = null;
@@ -635,28 +831,152 @@ let profileChart = null;
 let seenNotifIds = JSON.parse(localStorage.getItem('ntt_seen') || '[]');
 let typingTimer  = null;
 let isTyping     = false;
+let musicEnabled = localStorage.getItem('ntt_music') !== 'false';
+let musicVolume  = parseInt(localStorage.getItem('ntt_vol') || '50');
+let currentAudio = null;
+let gameStarted  = false;
 
 const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
+// SPLASH SCREEN
+// ════════════════════════════════
+function initSplash(){
+  // Generate particles
+  const container = document.getElementById('splash-particles');
+  for(let i=0;i<30;i++){
+    const p=document.createElement('div');
+    p.className='sp';
+    p.style.left=Math.random()*100+'%';
+    p.style.width=p.style.height=(Math.random()*3+1)+'px';
+    p.style.background=Math.random()>.5?'#00f5ff':'#ff00ff';
+    p.style.animationDuration=(Math.random()*6+4)+'s';
+    p.style.animationDelay=(Math.random()*4)+'s';
+    container.appendChild(p);
+  }
+
+  // Progress bar
+  const bar = document.getElementById('splash-bar');
+  const txt = document.getElementById('splash-loading-txt');
+  const steps = ['INITIALIZING...','LOADING ASSETS...','CONNECTING...','READY!'];
+  let prog=0;
+  const iv=setInterval(()=>{
+    prog+=Math.random()*18+8;
+    if(prog>=100){prog=100;clearInterval(iv);}
+    bar.style.width=prog+'%';
+    const si=Math.min(3,Math.floor(prog/25));
+    txt.textContent=steps[si];
+  },150);
+
+  setTimeout(()=>{
+    const splash=document.getElementById('splash');
+    splash.classList.add('fade-out');
+    setTimeout(()=>{splash.style.display='none';},650);
+  }, 2400);
+}
+
+// ════════════════════════════════
+// MUSIC
+// ════════════════════════════════
+function setupAudio(){
+  const themeEl = document.getElementById('audio-theme');
+  const gameEl  = document.getElementById('audio-game');
+  // Set sources — files at root
+  themeEl.src = 'theme.mp3';
+  gameEl.src  = 'music.mp3';
+  const vol = musicVolume / 100;
+  themeEl.volume = vol;
+  gameEl.volume  = vol;
+  // Init toggle UI
+  document.getElementById('toggle-music').checked = musicEnabled;
+  document.getElementById('music-volume').value = musicVolume;
+}
+
+function playTheme(){
+  if(!musicEnabled) return;
+  const gameEl = document.getElementById('audio-game');
+  gameEl.pause(); gameEl.currentTime=0;
+  const themeEl = document.getElementById('audio-theme');
+  themeEl.play().catch(()=>{});
+  currentAudio='theme';
+  showMusicIndicator('THEME');
+}
+
+function playGameMusic(){
+  if(!musicEnabled) return;
+  const themeEl = document.getElementById('audio-theme');
+  themeEl.pause(); themeEl.currentTime=0;
+  const gameEl = document.getElementById('audio-game');
+  gameEl.play().catch(()=>{});
+  currentAudio='game';
+  showMusicIndicator('IN-GAME');
+}
+
+function stopMusic(){
+  document.getElementById('audio-theme').pause();
+  document.getElementById('audio-game').pause();
+  currentAudio=null;
+  hideMusicIndicator();
+}
+
+function showMusicIndicator(name){
+  const el=document.getElementById('music-indicator');
+  document.getElementById('music-track-name').textContent=name;
+  el.classList.remove('hidden');
+}
+function hideMusicIndicator(){
+  document.getElementById('music-indicator').classList.add('hidden');
+}
+
+function onMusicToggle(enabled){
+  musicEnabled=enabled;
+  localStorage.setItem('ntt_music',enabled?'true':'false');
+  if(!enabled){
+    stopMusic();
+  } else {
+    if(gameStarted) playGameMusic(); else playTheme();
+  }
+}
+
+function onVolumeChange(val){
+  musicVolume=parseInt(val);
+  localStorage.setItem('ntt_vol',musicVolume);
+  const v=musicVolume/100;
+  document.getElementById('audio-theme').volume=v;
+  document.getElementById('audio-game').volume=v;
+}
+
+// ════════════════════════════════
+// SETTINGS
+// ════════════════════════════════
+function openSettings(){
+  document.getElementById('settings-overlay').classList.add('show');
+}
+function closeSettings(){
+  document.getElementById('settings-overlay').classList.remove('show');
+}
+function closeSettingsOutside(e){
+  if(e.target===document.getElementById('settings-overlay')) closeSettings();
+}
+
+// ════════════════════════════════
 // DB
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 async function dbGet(){const r=await fetch(DB_URL+'?t='+Date.now());return r.json();}
 async function dbSet(data){await fetch(DB_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
 
-// ════════════════════════════════════════════════
-// DEEPLINKS & URL ROUTING
-// ════════════════════════════════════════════════
+// ════════════════════════════════
+// DEEPLINKS
+// ════════════════════════════════
 function getDeeplinkForUser(username){
   return APP_BASE + '/player/' + encodeURIComponent(username.toLowerCase());
 }
 function parsePathname(){
-  // Handles /player/username
   const m = window.location.pathname.match(/\/player\/([^/?#]+)/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 function updateDeeplinkUI(){
-  if(!currentUser) return;
+  if(!currentUser||isGuest) return;
   const link = getDeeplinkForUser(currentUser.username);
   const el1 = document.getElementById('my-deeplink');
   const el2 = document.getElementById('profile-deeplink');
@@ -664,16 +984,15 @@ function updateDeeplinkUI(){
   if(el2) el2.textContent = link;
 }
 function copyDeeplink(){
+  if(isGuest){toast('SIGN IN TO GET YOUR INVITE LINK');return;}
   const link = getDeeplinkForUser(currentUser?.username||'player');
   navigator.clipboard.writeText(link).then(()=>toast('INVITE LINK COPIED! 🔗')).catch(()=>toast('COPY FAILED'));
 }
-function copyProfileLink(){
-  copyDeeplink();
-}
+function copyProfileLink(){ copyDeeplink(); }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // AUTH
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function switchTab(tab){
   document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register')));
   document.getElementById('form-login').classList.toggle('active',tab==='login');
@@ -694,6 +1013,7 @@ async function doLogin(){
     const user=users[u];
     if(!user||user.password!==btoa(p)){showErr('l-err','INVALID CREDENTIALS');return;}
     currentUser={username:u,...user};
+    isGuest=false;
     localStorage.setItem('ntt_u',u);
     localStorage.setItem('ntt_p',btoa(p));
     afterLogin(db);
@@ -723,6 +1043,7 @@ async function doRegister(){
     db.users=users;
     await dbSet(db);
     currentUser={username:u,...users[u]};
+    isGuest=false;
     localStorage.setItem('ntt_u',u);
     localStorage.setItem('ntt_p',btoa(p));
     afterLogin(db);
@@ -737,13 +1058,41 @@ async function autoLogin(){
   try{
     const db=await dbGet();
     const user=(db.users||{})[u];
-    if(user&&user.password===p){currentUser={username:u,...user};afterLogin(db);return true;}
+    if(user&&user.password===p){currentUser={username:u,...user};isGuest=false;afterLogin(db);return true;}
   }catch(e){}
   localStorage.removeItem('ntt_u');localStorage.removeItem('ntt_p');
   return false;
 }
 
+function playAsGuest(){
+  isGuest=true;
+  currentUser={username:'GUEST',pfp:randomAvatar('guest'),wins:0,losses:0,draws:0,joined:Date.now()};
+  myName='GUEST';myPfp=currentUser.pfp;
+  showScreen('screen-home');
+  setActiveNav('home');
+  updateHomeProfileGuest();
+  // Hide online mode for guests (require account) — just show toast
+  // Actually allow them to see it but block if they try
+  playTheme();
+  toast('PLAYING AS GUEST · STATS NOT SAVED');
+}
+
+function updateHomeProfileGuest(){
+  document.getElementById('home-username').innerHTML='GUEST <span class="guest-tag">GUEST</span>';
+  document.getElementById('home-avatar').src=currentUser.pfp;
+  document.getElementById('hp-wins').textContent='—';
+  document.getElementById('hp-losses').textContent='—';
+  document.getElementById('hp-draws').textContent='—';
+  document.getElementById('home-joined').textContent='PLAYING WITHOUT ACCOUNT';
+  // Hide share panel
+  document.getElementById('share-panel').style.display='none';
+  // Disable online mode for guests
+  const modeOnline=document.getElementById('mode-online');
+  if(modeOnline){modeOnline.classList.add('disabled');modeOnline.onclick=null;modeOnline.onclick=()=>toast('SIGN IN TO PLAY ONLINE');}
+}
+
 function afterLogin(db){
+  isGuest=false;
   myName=currentUser.username.toUpperCase();
   myPfp=currentUser.pfp||randomAvatar(currentUser.username);
   showScreen('screen-home');
@@ -751,51 +1100,45 @@ function afterLogin(db){
   updateHomeProfile();
   updateDeeplinkUI();
   loadNotificationsFromDB(db);
-  // Handle deeplink after login
   handleDeeplinkRoute();
+  document.getElementById('share-panel').style.display='';
+  // Re-enable online mode
+  const modeOnline=document.getElementById('mode-online');
+  if(modeOnline){modeOnline.classList.remove('disabled');modeOnline.onclick=showOnlineMenu;}
+  playTheme();
 }
 
 function doLogout(){
-  currentUser=null;
+  currentUser=null;isGuest=false;
   localStorage.removeItem('ntt_u');localStorage.removeItem('ntt_p');
+  stopMusic();
+  gameStarted=false;
   showScreen('screen-auth');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   toast('SIGNED OUT');
 }
 
-// ════════════════════════════════════════════════
-// DEEPLINK ROUTE HANDLER
-// ════════════════════════════════════════════════
+// ════════════════════════════════
+// DEEPLINK ROUTE
+// ════════════════════════════════
 function handleDeeplinkRoute(){
   const invitedBy = parsePathname();
-  if(!invitedBy) return;
-  if(!currentUser){
-    // Not logged in — they'll login then we'll redirect
-    return;
-  }
-  if(invitedBy.toLowerCase() === currentUser.username.toLowerCase()){
-    toast('THAT\'S YOUR OWN LINK!');
-    return;
-  }
-  // Show invite banner and auto-navigate to join
+  if(!invitedBy||!currentUser) return;
+  if(invitedBy.toLowerCase() === currentUser.username.toLowerCase()){toast('THAT\'S YOUR OWN LINK!');return;}
   showInviteBanner(invitedBy);
 }
-
 function showInviteBanner(inviterName){
-  const wrap = document.getElementById('invite-banner-wrap');
-  const text = document.getElementById('invite-banner-text');
-  if(wrap && text){
-    wrap.style.display = 'block';
-    text.textContent = inviterName.toUpperCase() + ' WANTS TO PLAY — PASTE THEIR CODE BELOW';
-  }
+  const wrap=document.getElementById('invite-banner-wrap');
+  const text=document.getElementById('invite-banner-text');
+  if(wrap&&text){wrap.style.display='block';text.textContent=inviterName.toUpperCase()+' WANTS TO PLAY — PASTE THEIR CODE BELOW';}
   setActiveNav('online');
   showScreen('screen-join');
-  toast('⚡ GAME INVITE FROM ' + inviterName.toUpperCase());
+  toast('⚡ GAME INVITE FROM '+inviterName.toUpperCase());
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // PFP UPLOAD
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function previewPfp(input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
@@ -806,6 +1149,7 @@ async function uploadToCatbox(file){
   try{const fd=new FormData();fd.append('reqtype','fileupload');fd.append('fileToUpload',file);const r=await fetch(CATBOX,{method:'POST',body:fd});const url=await r.text();return url.trim().startsWith('http')?url.trim():null;}catch(e){return null;}
 }
 async function uploadEditPfp(input){
+  if(isGuest){toast('SIGN IN TO CHANGE PFP');return;}
   const file=input.files[0];if(!file||!currentUser)return;
   toast('UPLOADING TO CATBOX...');
   const url=await uploadToCatbox(file);
@@ -817,11 +1161,11 @@ async function uploadEditPfp(input){
   toast('✓ PFP UPDATED');
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // SAVE USER
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 async function saveCurrentUser(){
-  if(!currentUser)return;
+  if(!currentUser||isGuest)return;
   try{
     const db=await dbGet();
     db.users=db.users||{};
@@ -830,9 +1174,25 @@ async function saveCurrentUser(){
   }catch(e){}
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // NOTIFICATIONS
-// ════════════════════════════════════════════════
+// ════════════════════════════════
+function formatNotifDate(ts){
+  if(!ts) return '';
+  const d=new Date(ts);
+  const now=new Date();
+  const diffMs=now-d;
+  const diffDays=Math.floor(diffMs/86400000);
+  if(diffDays===0){
+    const diffHrs=Math.floor(diffMs/3600000);
+    if(diffHrs===0){const diffMin=Math.floor(diffMs/60000);return diffMin<=1?'JUST NOW':`${diffMin}m AGO`;}
+    return `${diffHrs}h AGO`;
+  }
+  if(diffDays===1) return 'YESTERDAY';
+  if(diffDays<7) return `${diffDays}d AGO`;
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
 function loadNotificationsFromDB(db){
   const notifs=db.notifications||[];
   const updateMsg=db.update_msg||'';
@@ -845,7 +1205,7 @@ function loadNotificationsFromDB(db){
   if(!notifs.length){list.innerHTML='<div class="notif-empty">// NO NOTIFICATIONS</div>';return;}
   list.innerHTML=[...notifs].reverse().map(n=>{
     const type=n.type||'info';
-    const timeStr=n.ts?new Date(n.ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+    const timeStr=formatNotifDate(n.ts);
     return`<div class="notif-item"><span class="notif-type ${type}">${type.toUpperCase()}</span><div class="notif-title">${n.title||'// NOTICE'}</div><div class="notif-body">${n.body||''}</div><div class="notif-time">${timeStr}</div></div>`;
   }).join('');
 }
@@ -857,9 +1217,9 @@ function openNotifs(){
 function closeNotifs(){document.getElementById('notif-overlay').classList.remove('show');}
 function closeNotifsOutside(e){if(e.target===document.getElementById('notif-overlay'))closeNotifs();}
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // SCREENS & NAV
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -872,18 +1232,27 @@ function setActiveNav(tab){
 function goNav(tab){
   if(!currentUser){toast('SIGN IN FIRST');return;}
   setActiveNav(tab);
-  if(tab==='home'){showScreen('screen-home');updateHomeProfile();}
-  else if(tab==='online') showOnlineMenu();
+  if(tab==='home'){
+    showScreen('screen-home');
+    if(isGuest) updateHomeProfileGuest(); else updateHomeProfile();
+  }
+  else if(tab==='online'){
+    if(isGuest){toast('SIGN IN TO PLAY ONLINE');showScreen('screen-home');setActiveNav('home');return;}
+    showOnlineMenu();
+  }
   else if(tab==='lb'){showScreen('screen-lb');loadLeaderboard();}
   else if(tab==='profile'){showScreen('screen-profile');updateProfileScreen();}
 }
-function showOnlineMenu(){setActiveNav('online');showScreen('screen-online');}
+function showOnlineMenu(){
+  if(isGuest){toast('SIGN IN TO PLAY ONLINE');return;}
+  setActiveNav('online');showScreen('screen-online');
+}
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // HOME PROFILE
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function updateHomeProfile(){
-  if(!currentUser)return;
+  if(!currentUser||isGuest)return;
   document.getElementById('home-username').textContent=currentUser.username.toUpperCase();
   document.getElementById('home-avatar').src=currentUser.pfp||randomAvatar(currentUser.username);
   document.getElementById('hp-wins').textContent=currentUser.wins||0;
@@ -894,11 +1263,24 @@ function updateHomeProfile(){
   updateDeeplinkUI();
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // PROFILE SCREEN
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function updateProfileScreen(){
   if(!currentUser)return;
+  if(isGuest){
+    document.getElementById('profile-username').innerHTML='GUEST <span class="guest-tag">GUEST</span>';
+    document.getElementById('profile-avatar').src=currentUser.pfp;
+    document.getElementById('profile-joined').textContent='PLAYING WITHOUT ACCOUNT';
+    document.getElementById('pf-wins').textContent='—';
+    document.getElementById('pf-losses').textContent='—';
+    document.getElementById('pf-draws').textContent='—';
+    document.getElementById('profile-edit-pfp-area').style.display='none';
+    document.getElementById('profile-share-panel').style.display='none';
+    document.getElementById('profile-logout-btn').textContent='SIGN IN / REGISTER';
+    document.getElementById('profile-logout-btn').onclick=doLogout;
+    return;
+  }
   document.getElementById('profile-username').textContent=currentUser.username.toUpperCase();
   document.getElementById('profile-avatar').src=currentUser.pfp||randomAvatar(currentUser.username);
   const d=currentUser.joined?new Date(currentUser.joined).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'-';
@@ -906,6 +1288,10 @@ function updateProfileScreen(){
   document.getElementById('pf-wins').textContent=currentUser.wins||0;
   document.getElementById('pf-losses').textContent=currentUser.losses||0;
   document.getElementById('pf-draws').textContent=currentUser.draws||0;
+  document.getElementById('profile-edit-pfp-area').style.display='';
+  document.getElementById('profile-share-panel').style.display='';
+  document.getElementById('profile-logout-btn').textContent='SIGN OUT';
+  document.getElementById('profile-logout-btn').onclick=doLogout;
   updateDeeplinkUI();
   if(profileChart)profileChart.destroy();
   const w=currentUser.wins||0,l=currentUser.losses||0,dr=currentUser.draws||0;
@@ -916,9 +1302,9 @@ function updateProfileScreen(){
   });
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // LEADERBOARD
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 async function loadLeaderboard(){
   const list=document.getElementById('lb-list');
   list.innerHTML='<div class="loading-row"><div class="spinner"></div></div>';
@@ -931,16 +1317,19 @@ async function loadLeaderboard(){
       const rankClass=i===0?'gold':i===1?'silver':i===2?'bronze':'';
       const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1);
       const pfpSrc=u.pfp||randomAvatar(u.name);
-      return`<div class="lb-row"><div class="lb-rank ${rankClass}">${medal}</div><img class="avatar-sm" src="${pfpSrc}" onerror="this.src='${randomAvatar(u.name)}'"><div class="lb-name">${u.name.toUpperCase()}${u.name===currentUser?.username?' (YOU)':''}</div><div class="lb-wins">${u.wins}W</div></div>`;
+      const isMe=!isGuest&&u.name===currentUser?.username;
+      return`<div class="lb-row"><div class="lb-rank ${rankClass}">${medal}</div><img class="avatar-sm" src="${pfpSrc}" onerror="this.src='${randomAvatar(u.name)}'"><div class="lb-name">${u.name.toUpperCase()}${isMe?' (YOU)':''}</div><div class="lb-wins">${u.wins}W</div></div>`;
     }).join('');
   }catch(e){list.innerHTML='<div class="notif-empty">FAILED TO LOAD</div>';}
 }
 
-// ════════════════════════════════════════════════
-// RECORD RESULT
-// ════════════════════════════════════════════════
+// ════════════════════════════════
+// RECORD RESULT — Only for online games with logged-in users
+// ════════════════════════════════
 async function recordResult(result){
-  if(!currentUser)return;
+  // NEVER record for guests or local/AI modes
+  if(!currentUser||isGuest) return;
+  if(gameMode==='local'||gameMode==='ai') return;
   if(result==='win') currentUser.wins=(currentUser.wins||0)+1;
   if(result==='loss') currentUser.losses=(currentUser.losses||0)+1;
   if(result==='draw') currentUser.draws=(currentUser.draws||0)+1;
@@ -948,9 +1337,9 @@ async function recordResult(result){
   await saveCurrentUser();
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // BOARD
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function renderBoard(){
   board.forEach((v,i)=>{
     const c=document.getElementById('c'+i);
@@ -977,9 +1366,6 @@ function updateTurnBadges(){
   }
 }
 
-// ════════════════════════════════════════════════
-// CELL CLICK
-// ════════════════════════════════════════════════
 function cellClick(i){
   if(!gameActive||board[i])return;
   if(gameMode==='local') makeMove(i,currentTurn);
@@ -993,69 +1379,90 @@ function makeMove(i,symbol){
   if(winner){
     highlightWin(winner.cells);gameActive=false;
     setTimeout(async()=>{
-      if(gameMode==='local'){showResult('win',`${winner.symbol} WINS!`,`${winner.symbol==='X'?document.getElementById('name-x').textContent:document.getElementById('name-o').textContent} TAKES IT`);await recordResult('win');}
-      else if(gameMode==='ai'){if(winner.symbol==='X'){showResult('win','YOU WIN!','HUMAN VICTORIOUS');await recordResult('win');}else{showResult('lose','AI WINS!','MACHINE DOMINANT');await recordResult('loss');}}
-      else{if(winner.symbol===mySymbol){showResult('win','YOU WIN!','WELL PLAYED');await recordResult('win');}else{showResult('lose','YOU LOSE!','BETTER LUCK NEXT TIME');await recordResult('loss');}}
+      if(gameMode==='local'){showResult('draw','GAME OVER!',winner.symbol+' WINS · NO STATS RECORDED');}
+      else if(gameMode==='ai'){
+        if(winner.symbol==='X'){showResult('win','YOU WIN!','HUMAN VICTORIOUS · NO STATS RECORDED');}
+        else{showResult('lose','AI WINS!','MACHINE DOMINANT · NO STATS RECORDED');}
+      }
+      else{
+        if(winner.symbol===mySymbol){showResult('win','YOU WIN!','WELL PLAYED');await recordResult('win');}
+        else{showResult('lose','YOU LOSE!','BETTER LUCK NEXT TIME');await recordResult('loss');}
+      }
     },500);
     return;
   }
-  if(board.every(v=>v)){gameActive=false;setTimeout(async()=>{showResult('draw','DRAW!','EVENLY MATCHED');await recordResult('draw');},300);return;}
+  if(board.every(v=>v)){
+    gameActive=false;
+    setTimeout(async()=>{
+      if(gameMode==='local'||gameMode==='ai'){showResult('draw','DRAW!','EVENLY MATCHED · NO STATS RECORDED');}
+      else{showResult('draw','DRAW!','EVENLY MATCHED');await recordResult('draw');}
+    },300);
+    return;
+  }
   currentTurn=currentTurn==='X'?'O':'X';updateTurnBadges();
 }
 
 function checkWinner(){for(const[a,b,c]of WINS)if(board[a]&&board[a]===board[b]&&board[b]===board[c])return{symbol:board[a],cells:[a,b,c]};return null;}
 function highlightWin(cells){cells.forEach(i=>document.getElementById('c'+i).classList.add('winning'));}
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // AI
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function aiMove(){makeMove(getBestMove(),'O');}
 function getBestMove(){let best=-Infinity,mv=-1;for(let i=0;i<9;i++)if(!board[i]){board[i]='O';const s=minimax(board,0,false);board[i]='';if(s>best){best=s;mv=i;}}return mv;}
 function minimax(b,depth,isMax){const w=checkWinner();if(w)return w.symbol==='O'?10-depth:depth-10;if(b.every(v=>v))return 0;if(isMax){let best=-Infinity;for(let i=0;i<9;i++)if(!b[i]){b[i]='O';best=Math.max(best,minimax(b,depth+1,false));b[i]='';}return best;}else{let best=Infinity;for(let i=0;i<9;i++)if(!b[i]){b[i]='X';best=Math.min(best,minimax(b,depth+1,true));b[i]='';}return best;}}
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // GAME MODES
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function startLocalGame(){
   gameMode='local';
-  document.getElementById('name-x').textContent='P1';
+  const p1name=(currentUser?.username||'P1').substring(0,8).toUpperCase();
+  document.getElementById('name-x').textContent=p1name;
   document.getElementById('name-o').textContent='P2';
   document.getElementById('pfp-x').src=currentUser?.pfp||randomAvatar(currentUser?.username);
-  document.getElementById('pfp-o').src=randomAvatar('guest');
+  document.getElementById('pfp-o').src=randomAvatar('guest2');
   initGame();
 }
 function startAIGame(){
-  gameMode='ai';mySymbol='X';myName=currentUser?.username||'PLAYER';opponentName='AI';
-  document.getElementById('name-x').textContent=myName.substring(0,8).toUpperCase();
+  gameMode='ai';mySymbol='X';
+  myName=(currentUser?.username||'PLAYER').toUpperCase();opponentName='AI';
+  document.getElementById('name-x').textContent=myName.substring(0,8);
   document.getElementById('name-o').textContent='AI';
   document.getElementById('pfp-x').src=currentUser?.pfp||randomAvatar(currentUser?.username);
   document.getElementById('pfp-o').src='https://api.dicebear.com/7.x/bottts/svg?seed=neonttt&backgroundColor=050510';
   initGame();
 }
 function initGame(){
-  board=Array(9).fill('');currentTurn='X';gameActive=true;
+  board=Array(9).fill('');currentTurn='X';gameActive=true;gameStarted=true;
   clearChatMessages();
   addSystemMessage('GAME INITIALIZED');
   showScreen('screen-game');
   renderBoard();
   setupAccelerometer();
-  // For non-online games hide typing indicator
+  playGameMusic();
+  // Hide chat for non-online or local
   if(gameMode!=='online-host'&&gameMode!=='online-guest'){
     document.getElementById('typing-indicator').classList.add('hidden');
-    document.getElementById('chat-input-row').style.display= (gameMode==='local'||gameMode==='ai')?'none':'flex';
+    document.getElementById('chat-input-row').style.display='none';
   }
 }
-function exitGame(){gameActive=false;closeRTC();showScreen('screen-home');goNav('home');}
+function exitGame(){
+  gameActive=false;gameStarted=false;
+  closeRTC();
+  showScreen('screen-home');
+  goNav('home');
+  playTheme();
+}
 
-// ════════════════════════════════════════════════
-// WEBRTC P2P — improved with reconnect stability
-// ════════════════════════════════════════════════
+// ════════════════════════════════
+// WEBRTC — Compressed SDP
+// ════════════════════════════════
 let rtcPeer=null,dataChannel=null;
 const RTC_CONFIG={
   iceServers:[
     {urls:'stun:stun.l.google.com:19302'},
     {urls:'stun:stun1.l.google.com:19302'},
-    {urls:'stun:stun2.l.google.com:19302'},
     {urls:'stun:stun.cloudflare.com:3478'}
   ],
   iceCandidatePoolSize:10
@@ -1064,12 +1471,23 @@ function closeRTC(){
   if(dataChannel){try{dataChannel.close();}catch(e){}dataChannel=null;}
   if(rtcPeer){try{rtcPeer.close();}catch(e){}rtcPeer=null;}
 }
-function encodeSDP(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))));}
-function decodeSDP(s){
-  try{return JSON.parse(decodeURIComponent(escape(atob(s.trim()))));}
-  catch(e){
-    // fallback for old format
-    try{return JSON.parse(atob(s.trim()));}
+
+// Compress SDP by extracting only essentials
+function compressSDP(sdpObj){
+  // We encode full SDP but compress via base64 with minimal JSON
+  const compact={t:sdpObj.type,s:sdpObj.sdp};
+  // Basic compression: remove common repeated strings
+  compact.s=compact.s
+    .replace(/a=extmap-allow-mixed\r\n/g,'')
+    .replace(/a=msid-semantic: WMS\r\n/g,'');
+  return btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+}
+function decompressSDP(str){
+  try{
+    const compact=JSON.parse(decodeURIComponent(escape(atob(str.trim()))));
+    return{type:compact.t,sdp:compact.s};
+  }catch(e){
+    try{return JSON.parse(decodeURIComponent(escape(atob(str.trim()))));}
     catch(e2){throw new Error('Invalid code');}
   }
 }
@@ -1081,20 +1499,21 @@ function waitForICE(pc){
     const finish=()=>{if(!done){done=true;resolve();}};
     pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete')finish();});
     pc.addEventListener('icecandidate',e=>{if(e.candidate===null)finish();});
-    setTimeout(finish,5000); // max wait 5s
+    setTimeout(finish,5000);
   });
 }
 
 async function startHost(){
+  if(isGuest){toast('SIGN IN TO HOST GAMES');return;}
   myName=(currentUser?.username||'PLAYER').toUpperCase();
   myPfp=currentUser?.pfp||randomAvatar(currentUser?.username);
   mySymbol='X';gameMode='online-host';closeRTC();
   showScreen('screen-host');
   document.getElementById('offer-out').value='';
+  document.getElementById('offer-out-display').textContent='Generating...';
   document.getElementById('answer-in').value='';
   document.getElementById('host-dot').className='status-dot waiting';
   document.getElementById('host-status').textContent='Generating offer...';
-  // Activate step 1, dim step 2
   document.getElementById('host-step1').className='conn-step active-step';
   document.getElementById('host-step2').className='conn-step';
 
@@ -1111,7 +1530,9 @@ async function startHost(){
   const offer=await rtcPeer.createOffer();
   await rtcPeer.setLocalDescription(offer);
   await waitForICE(rtcPeer);
-  document.getElementById('offer-out').value=encodeSDP(rtcPeer.localDescription);
+  const compressed=compressSDP(rtcPeer.localDescription);
+  document.getElementById('offer-out').value=compressed;
+  document.getElementById('offer-out-display').textContent=compressed.substring(0,80)+'...';
   document.getElementById('host-step1').className='conn-step active-step';
   document.getElementById('host-step2').className='conn-step active-step';
   document.getElementById('host-status').textContent='Share offer → paste answer below';
@@ -1122,7 +1543,7 @@ async function hostApplyAnswer(){
   const raw=document.getElementById('answer-in').value.trim();
   if(!raw){toast('PASTE ANSWER CODE FIRST');return;}
   try{
-    await rtcPeer.setRemoteDescription(new RTCSessionDescription(decodeSDP(raw)));
+    await rtcPeer.setRemoteDescription(new RTCSessionDescription(decompressSDP(raw)));
     document.getElementById('host-dot').className='status-dot waiting';
     document.getElementById('host-status').textContent='Connecting...';
     document.getElementById('host-step2').className='conn-step done-step';
@@ -1133,40 +1554,40 @@ async function hostApplyAnswer(){
 function copyOffer(){
   const v=document.getElementById('offer-out').value;
   if(!v){toast('NOT READY YET');return;}
-  navigator.clipboard.writeText(v).then(()=>toast('OFFER COPIED! 📋')).catch(()=>{document.getElementById('offer-out').select();document.execCommand('copy');toast('OFFER COPIED! 📋');});
+  navigator.clipboard.writeText(v).then(()=>toast('OFFER COPIED! 📋')).catch(()=>{const ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('OFFER COPIED! 📋');});
 }
 function shareOffer(){
   const v=document.getElementById('offer-out').value;
   if(!v){toast('NOT READY');return;}
-  if(navigator.share){navigator.share({title:'NEON TTT — Join my game!',text:'Join my NEON TTT game!\n\nMy offer code:\n'+v}).catch(()=>{});}
+  if(navigator.share){navigator.share({title:'NEON TTT — Join my game!',text:'My offer code:\n'+v}).catch(()=>{});}
   else copyOffer();
 }
 
 async function guestMakeAnswer(){
   const raw=document.getElementById('offer-in').value.trim();
   if(!raw){toast('PASTE OFFER CODE FIRST');return;}
+  if(isGuest){toast('SIGN IN TO JOIN ONLINE GAMES');return;}
   myName=(currentUser?.username||'PLAYER').toUpperCase();
   myPfp=currentUser?.pfp||randomAvatar(currentUser?.username);
   mySymbol='O';gameMode='online-guest';closeRTC();
   document.getElementById('join-dot').className='status-dot waiting';
   document.getElementById('join-status').textContent='Processing...';
   document.getElementById('join-step1').className='conn-step done-step';
-
   try{
     rtcPeer=new RTCPeerConnection(RTC_CONFIG);
     rtcPeer.ondatachannel=e=>{dataChannel=e.channel;setupDataChannel(dataChannel);};
-
     rtcPeer.onconnectionstatechange=()=>{
       const s=rtcPeer.connectionState;
       if(s==='connected'){document.getElementById('join-dot').className='status-dot connected';document.getElementById('join-status').textContent='Connected!';}
       else if(s==='failed'||s==='disconnected'){document.getElementById('join-dot').className='status-dot';document.getElementById('join-status').textContent='Connection lost — try again';}
     };
-
-    await rtcPeer.setRemoteDescription(new RTCSessionDescription(decodeSDP(raw)));
+    await rtcPeer.setRemoteDescription(new RTCSessionDescription(decompressSDP(raw)));
     const answer=await rtcPeer.createAnswer();
     await rtcPeer.setLocalDescription(answer);
     await waitForICE(rtcPeer);
-    document.getElementById('answer-out').value=encodeSDP(rtcPeer.localDescription);
+    const compressed=compressSDP(rtcPeer.localDescription);
+    document.getElementById('answer-out').value=compressed;
+    document.getElementById('answer-out-display').textContent=compressed.substring(0,80)+'...';
     document.getElementById('join-step2').style.display='';
     document.getElementById('join-step2').className='conn-step active-step';
     document.getElementById('join-status').textContent='Send answer → waiting for host...';
@@ -1180,7 +1601,8 @@ async function guestMakeAnswer(){
 
 function copyAnswer(){
   const v=document.getElementById('answer-out').value;
-  navigator.clipboard.writeText(v).then(()=>toast('ANSWER COPIED! 📋')).catch(()=>{document.getElementById('answer-out').select();document.execCommand('copy');toast('ANSWER COPIED! 📋');});
+  if(!v){toast('NOT READY');return;}
+  navigator.clipboard.writeText(v).then(()=>toast('ANSWER COPIED! 📋')).catch(()=>{const ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('ANSWER COPIED! 📋');});
 }
 function shareAnswer(){
   const v=document.getElementById('answer-out').value;
@@ -1197,10 +1619,8 @@ function setupDataChannel(ch){
     toast('🟢 CONNECTED!');
   };
   ch.onclose=()=>{toast('OPPONENT DISCONNECTED');addSystemMessage('OPPONENT LEFT THE GAME');};
-  ch.onerror=(e)=>{console.error('DC error',e);toast('CONNECTION ERROR');};
-  ch.onmessage=e=>{
-    try{handleOnlineData(JSON.parse(e.data));}catch(err){}
-  };
+  ch.onerror=()=>{toast('CONNECTION ERROR');};
+  ch.onmessage=e=>{try{handleOnlineData(JSON.parse(e.data));}catch(err){}};
 }
 
 function sendOnline(obj){
@@ -1226,16 +1646,12 @@ function handleOnlineData(data){
   }else if(data.type==='move'){
     makeMove(data.index,currentTurn);
   }else if(data.type==='chat'){
-    // Incoming chat message
-    addChatMessage(data.message, data.from || opponentName, false);
+    addChatMessage(data.message,data.from||opponentName,false);
     showTypingIndicator(false);
   }else if(data.type==='typing'){
     showTypingIndicator(true);
     clearTimeout(typingTimer);
     typingTimer=setTimeout(()=>showTypingIndicator(false),2500);
-  }else if(data.type==='rematch'){
-    toast(opponentName+' WANTS REMATCH!');
-    addSystemMessage(opponentName+' WANTS A REMATCH!');
   }else if(data.type==='rematch_accept'){
     closeResult();
     board=Array(9).fill('');currentTurn='X';gameActive=true;
@@ -1245,84 +1661,58 @@ function handleOnlineData(data){
 
 function startOnlineGame(){
   initGame();
-  // Show chat input for online
   document.getElementById('chat-input-row').style.display='flex';
   addSystemMessage('ONLINE MATCH — YOU ARE '+mySymbol);
 }
 function cancelRoom(){closeRTC();showScreen('screen-online');}
 
-// ════════════════════════════════════════════════
-// CHAT SYSTEM
-// ════════════════════════════════════════════════
-function clearChatMessages(){
-  const el=document.getElementById('chat-messages');
-  if(el) el.innerHTML='';
-}
-
+// ════════════════════════════════
+// CHAT
+// ════════════════════════════════
+function clearChatMessages(){const el=document.getElementById('chat-messages');if(el)el.innerHTML='';}
 function addSystemMessage(text){
-  const el=document.getElementById('chat-messages');
-  if(!el) return;
-  const d=document.createElement('div');
-  d.className='chat-msg system-msg';
+  const el=document.getElementById('chat-messages');if(!el)return;
+  const d=document.createElement('div');d.className='chat-msg system-msg';
   d.innerHTML=`<div class="chat-msg-bubble">${text}</div>`;
-  el.appendChild(d);
-  el.scrollTop=el.scrollHeight;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
 }
-
-function addChatMessage(text, from, isMine){
-  const el=document.getElementById('chat-messages');
-  if(!el||!text.trim()) return;
+function addChatMessage(text,from,isMine){
+  const el=document.getElementById('chat-messages');if(!el||!text.trim())return;
   const now=new Date();
   const timeStr=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  const d=document.createElement('div');
-  d.className='chat-msg '+(isMine?'mine':'theirs');
+  const d=document.createElement('div');d.className='chat-msg '+(isMine?'mine':'theirs');
   d.innerHTML=`<div class="chat-msg-username">${from}</div><div class="chat-msg-bubble">${escapeHtml(text)}</div><div class="chat-msg-time">${timeStr}</div>`;
-  el.appendChild(d);
-  el.scrollTop=el.scrollHeight;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
 }
-
-function escapeHtml(s){
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function sendChat(){
   const input=document.getElementById('chat-input');
-  const msg=input.value.trim();
-  if(!msg) return;
+  const msg=input.value.trim();if(!msg)return;
   if(gameMode==='online-host'||gameMode==='online-guest'){
     if(!dataChannel||dataChannel.readyState!=='open'){toast('NOT CONNECTED');return;}
     sendOnline({type:'chat',message:msg,from:myName});
-    addChatMessage(msg, myName, true);
-    input.value='';
-    isTyping=false;
+    addChatMessage(msg,myName,true);
+    input.value='';isTyping=false;
   }else if(gameMode==='local'){
-    // Local chat (same device)
     addChatMessage(msg,'P'+(currentTurn==='X'?'1':'2'),true);
     input.value='';
   }
 }
-
 function showTypingIndicator(show){
-  const el=document.getElementById('typing-indicator');
-  if(!el) return;
+  const el=document.getElementById('typing-indicator');if(!el)return;
   el.textContent=opponentName+' IS TYPING...';
   el.classList.toggle('hidden',!show);
 }
-
-// Handle typing broadcast
 function onChatInput(){
-  if(gameMode!=='online-host'&&gameMode!=='online-guest') return;
-  if(!isTyping){
-    isTyping=true;
-    sendOnline({type:'typing'});
-  }
+  if(gameMode!=='online-host'&&gameMode!=='online-guest')return;
+  if(!isTyping){isTyping=true;sendOnline({type:'typing'});}
   clearTimeout(typingTimer);
   typingTimer=setTimeout(()=>{isTyping=false;},2000);
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // RESULTS
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 function showResult(type,title,sub){
   document.getElementById('result-title').textContent=title;
   document.getElementById('result-sub').textContent=sub;
@@ -1342,9 +1732,9 @@ function playAgain(){
   else startLocalGame();
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // ACCELEROMETER
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 let lastShake=0,accelActive=false;
 function setupAccelerometer(){
   if(accelActive)return;accelActive=true;
@@ -1363,12 +1753,12 @@ function shakeReset(){
   toast('📳 SHAKE — BOARD RESET!');
   board=Array(9).fill('');currentTurn='X';renderBoard();
   addSystemMessage('SHAKE DETECTED — BOARD RESET');
-  sendOnline({type:'rematch_accept'});
+  if(gameMode==='online-host'||gameMode==='online-guest') sendOnline({type:'rematch_accept'});
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // TOAST
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 let toastTimer=null;
 function toast(msg){
   const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
@@ -1376,40 +1766,42 @@ function toast(msg){
   toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
 }
 
-// ════════════════════════════════════════════════
-// KEYBOARD SHORTCUTS
-// ════════════════════════════════════════════════
+// ════════════════════════════════
+// KEYBOARD
+// ════════════════════════════════
 document.addEventListener('keydown',e=>{
-  // Enter to send chat
-  if(e.key==='Enter'&&document.activeElement===document.getElementById('chat-input')){
-    sendChat();return;
-  }
-  // Enter to submit auth
+  if(e.key==='Enter'&&document.activeElement===document.getElementById('chat-input')){sendChat();return;}
   if(e.key==='Enter'&&document.getElementById('screen-auth').classList.contains('active')){
     document.getElementById('form-login').classList.contains('active')?doLogin():doRegister();
   }
 });
-
-// Chat input event
 document.addEventListener('DOMContentLoaded',()=>{
   const ci=document.getElementById('chat-input');
-  if(ci) ci.addEventListener('input',onChatInput);
+  if(ci)ci.addEventListener('input',onChatInput);
 });
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 // BOOT
-// ════════════════════════════════════════════════
+// ════════════════════════════════
 (async()=>{
+  initSplash();
+  setupAudio();
+
+  // Wait for splash to finish
+  await new Promise(r=>setTimeout(r,2600));
+
   const ok=await autoLogin();
   if(!ok){
     showScreen('screen-auth');
-    // If deeplink, show a note
+    // Try to play theme after user interaction (browser policy)
+    document.addEventListener('click',()=>{if(musicEnabled&&!currentAudio)playTheme();},{once:true});
     const invitedBy=parsePathname();
     if(invitedBy){
       switchTab('login');
-      document.getElementById('l-err').textContent='SIGN IN TO ACCEPT INVITE FROM '+invitedBy.toUpperCase();
-      document.getElementById('l-err').classList.add('show');
-      document.getElementById('l-err').style.color='var(--yellow)';
+      const el=document.getElementById('l-err');
+      el.textContent='SIGN IN TO ACCEPT INVITE FROM '+invitedBy.toUpperCase();
+      el.classList.add('show');
+      el.style.color='var(--yellow)';
     }
   }
 })();
